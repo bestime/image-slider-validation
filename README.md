@@ -1,16 +1,16 @@
-# javascript canvas图片滑块验证
+## javascript canvas图片滑块验证
 
-## 载入资源
+### 载入资源
 ```html
 <link href="./image-slider-validation.css" rel=stylesheet>
 <script src="./image-slider-validation.js"></script>
 ```
 
-## 使用方法
+### 使用方法
 ```javascript
 // 提供 show, close, reLoad 方法
 var oISV = ImageSliderValidation({
-  // canvas： 后端给出镂空的坐标（x,y）, 由前端绘制图片并验证
+  // canvas： 【默认】。后端给出镂空的坐标（x,y）, 由前端绘制图片并验证
   // image： 由后端生成两张图片，前端不知道坐标（x,y）
   mode: 'canvas',
   
@@ -33,11 +33,11 @@ var oISV = ImageSliderValidation({
   error: function (fnClosePlugin) { },
 
   // 获取图片的回调，这里可以调用自己的接口，callback数据参照此例子
-  onGetImage (callback) {
+  onGetImage: function (onImageResponse) {
     var imgWidth = getRandom(380, 500)
     var imgHeight = Math.round(imgWidth * 210 / 380)
     var imgUrl = `https://picsum.photos/${imgWidth}/${imgHeight}/?blur=10`
-    callback({
+    onImageResponse({
       src: imgUrl,
       x: getRandom(100, 320), // 镂空坐标X 0~248
       y: getRandom(0, 150), // 镂空坐标Y 0~112
