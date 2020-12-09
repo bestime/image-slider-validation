@@ -3,7 +3,7 @@
  * @author Jiang Yang (Bestime)
  * @QQ 1174295440
  * @see https://github.com/bestime/image-slider-validation
- * @update 2020-06-29 10:27:39:839
+ * @update 2020-12-09 13:58
  * 
  * y坐标范围：0~320
  * x坐标范围：0~150
@@ -134,8 +134,7 @@ var ImageSliderValidation = (function () {
     }
 
     function onUp () {
-      onConfirm(currentX)
-      
+      onConfirm(currentX)      
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
     }
