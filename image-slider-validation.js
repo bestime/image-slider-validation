@@ -7,7 +7,6 @@
  * 
  * y坐标范围：0~320
  * x坐标范围：0~150
- * 
  */
 var ImageSliderValidation = (function () {
   var PI = Math.PI

@@ -1,5 +1,7 @@
 ## javascript canvas图片滑块验证
 
+> [查看源码](https://github.com/bestime/image-slider-validation/blob/master/image-slider-validation.js "查看源码") https://github.com/bestime/image-slider-validation/blob/master/image-slider-validation.js
+
 ### 载入资源
 ```html
 <link href="./image-slider-validation.css" rel=stylesheet>
