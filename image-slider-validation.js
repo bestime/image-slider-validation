@@ -9,12 +9,14 @@
  * x坐标范围：0~150
  */
 var ImageSliderValidation = (function () {
+  var dpr = isMobile ? window.devicePixelRatio : 1
   var PI = Math.PI
-  var r = 10
-  var sliderWidth = 42
-  var realSliderWidth = sliderWidth + r * 2
+  var r = 10  
+  var sliderWidth = 42*dpr
+  var realSliderWidth = sliderWidth + r * 2*dpr
   var tipMsg = '向右拖动滑块填充拼图'
   var sliderOffsetY = 19
+  var isMobile = 'ontouchstart' in document.documentElement
 
   //移除节点
   function removeElement (el) {
@@ -118,17 +120,32 @@ var ImageSliderValidation = (function () {
       oSpan = oHandle.getElementsByTagName('span')[0]
       oI = oHandle.getElementsByTagName('i')[0]
       oB = oHandle.getElementsByTagName('b')[0]
-      oSpan.onmousedown = function (ev) {
-        ev = ev || window.event
-        downX = ev.clientX - currentX
-        document.addEventListener('mousemove', onMove)
-        document.addEventListener('mouseup', onUp)
-        onMouseDown()
+      if(isMobile) {
+        oSpan.ontouchstart = function (ev) {
+          ev = ev.targetTouches[0];
+          downX = ev.clientX - currentX
+          document.addEventListener('touchmove', onMove)
+          document.addEventListener('touchend', onUp)
+          document.addEventListener('touchcancel', onUp)
+          onMouseDown()
+        }
+      } else {
+        oSpan.onmousedown = function (ev) {
+          ev = ev || window.event
+          downX = ev.clientX - currentX
+          document.addEventListener('mousemove', onMove)
+          document.addEventListener('mouseup', onUp)
+          onMouseDown()
+        }
       }
     }, 50)
 
     function onMove (ev) {
-      ev = ev || window.event
+      if(isMobile) {
+        ev = ev.targetTouches[0];
+      } else {
+        ev = ev || window.event
+      }      
       upateX(ev.clientX - downX)
     }
 
@@ -136,6 +153,9 @@ var ImageSliderValidation = (function () {
       onConfirm(currentX)      
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
+      document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('touchend', onUp)
+      document.removeEventListener('touchcancel', onUp)
     }
 
     function upateX (x) {
@@ -176,8 +196,11 @@ var ImageSliderValidation = (function () {
   
 
   return function (options) {
-    var width = options.width || 310
-    var height = options.height || 155
+    var cssWidth = options.width || 100
+    var cssHeight = options.height || 100
+    var width = cssWidth * dpr
+    var height = cssHeight * dpr
+    
     var oWrapper = options.wrapper
     var mode = options.mode || 'canvas'
     var pinnedX = 0
@@ -191,15 +214,20 @@ var ImageSliderValidation = (function () {
     oRefresh.className = 'isv-refresh'
     oClose.className = 'isv-close'
     oCanvasWrapper.className = 'isv-canvas'
+    oCanvasWrapper.style.width = cssWidth + 'px'
+    oCanvasWrapper.style.height = cssHeight + 'px'
     oPaddingBox.className = 'image-slider-validation loading'
     oPaddingBox.onclick = prevent
     var timer02, timer01, backgroundCanvas, sliderCanvas, backgroundCtx, sliderCtx;
 
-    updatePinnedPosition()    
-
     if(mode==='canvas') {
       backgroundCanvas = createBackgroundCanvas(width, height)
       sliderCanvas = backgroundCanvas.cloneNode(true)
+      backgroundCanvas.style.width = cssWidth + 'px'
+      backgroundCanvas.style.height = cssHeight + 'px'
+      sliderCanvas.style.width = realSliderWidth/dpr + 'px'
+      sliderCanvas.style.height = cssHeight + 'px'
+
       backgroundCtx = backgroundCanvas.getContext('2d')
       sliderCtx = sliderCanvas.getContext('2d')
       backgroundCanvas.className = 'isv-back'
@@ -219,7 +247,7 @@ var ImageSliderValidation = (function () {
       oPaddingBox.classList.add("success");
       iHandle.setSuccess()
       timer01 = setTimeout(function () {
-        options.success && options.success(stopX,pinnedY-sliderOffsetY,close)
+        options.success && options.success(stopX,pinnedY,close)
       }, 1000)
     }
 
@@ -242,7 +270,7 @@ var ImageSliderValidation = (function () {
         clearTimeout(timer01)
         clearTimeout(timer02)
         if(Math.abs(stopX-pinnedX)<=2) {
-          checkSuccess()
+          checkSuccess(stopX)
         } else {
           checkFail()
         }
@@ -283,9 +311,9 @@ var ImageSliderValidation = (function () {
         if(mode==='canvas') {
           pinnedX = x
           pinnedY = y + sliderOffsetY
+          updatePinnedPosition() 
           drawClipImage(backgroundCtx, 'fill', pinnedX, pinnedY)
           drawClipImage(sliderCtx, 'clip', pinnedX, pinnedY)
-          
           
           backgroundCtx.drawImage(image, 0, 0, width, height)
           sliderCtx.drawImage(image, 0, 0, width, height)
@@ -355,8 +383,8 @@ var ImageSliderValidation = (function () {
         pinnedY = height - realSliderWidth+sliderOffsetY
       }
   
-      if (pinnedX < 0) {
-        pinnedX = 0
+      if (pinnedX < realSliderWidth) {
+        pinnedX = realSliderWidth
       } else if(pinnedX > width - realSliderWidth) {
         pinnedX = width - realSliderWidth
       }

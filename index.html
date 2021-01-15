@@ -41,6 +41,10 @@
   bottom: -2px;
 }
 
+.mobile #demo{
+  margin:250px 10px 10px 10px;
+}
+
 </style>
 </head>
 <body>
@@ -54,6 +58,14 @@
   </div>
 
 <script>
+var isMobile = 'ontouchstart' in document.documentElement
+if(isMobile) {
+  document.body.className = 'mobile'
+}
+var currentDpr = isMobile ? window.devicePixelRatio : 1
+var wrapperWidth = 250 
+var wrapperHeight = 160;
+
 
 const base6401 = 'data:image/png;base64,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'
 
@@ -72,16 +84,17 @@ var oISV = ImageSliderValidation({
   wrapper: oDemoButton,
 
   // 图片宽度
-  width: 380, 
+  width: wrapperWidth, 
 
   // 图片高度
-  height: 210,
+  height: wrapperHeight,
 
   // 滑块宽度
   sliderButtonWidth: 40,
 
   // 验证成功回调
   success: function (x, y, fnClosePlugin) {
+    console.log('抬起', x, y)
     console.log('陈工01')
     oP.innerHTML = '验证成功'
     fnClosePlugin()
@@ -96,13 +109,15 @@ var oISV = ImageSliderValidation({
 
   // 获取图片的回调，这里可以调用自己的接口，callback数据参照此例子
   onGetImage (callback) {
-    var imgWidth = getRandom(380, 500)
-    var imgHeight = Math.round(imgWidth * 210 / 380)
+    var imgWidth = Math.round(getRandom(wrapperWidth, wrapperWidth+300)*currentDpr)
+    var imgHeight = Math.round(imgWidth * wrapperHeight / wrapperWidth)
+
     var imgUrl = `https://picsum.photos/${imgWidth}/${imgHeight}/?blur=10`
+    // imgUrl = `https://placekitten.com/g/735/470`
     callback({
       src: imgUrl,
-      x: getRandom(100, 320), // 镂空坐标X 0~248
-      y: getRandom(0, 150), // 镂空坐标Y 0~112
+      x: getRandom(100, wrapperWidth), // 镂空坐标X 0~248
+      y: getRandom(0, wrapperHeight), // 镂空坐标Y 0~112
     })
   }
 })
@@ -120,10 +135,10 @@ var iPHP = ImageSliderValidation({
   wrapper: oDemoButton2,
 
   // 图片宽度
-  width: 380, 
+  width: wrapperWidth, 
 
   // 图片高度
-  height: 210,
+  height: wrapperHeight,
 
   // 滑块宽度
   sliderButtonWidth: 40,
