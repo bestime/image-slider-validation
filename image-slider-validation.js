@@ -9,6 +9,7 @@
  * x坐标范围：0~150
  */
 var ImageSliderValidation = (function () {
+  var isMobile = 'ontouchstart' in document.documentElement
   var dpr = isMobile ? window.devicePixelRatio : 1
   var PI = Math.PI
   var r = 10  
@@ -16,7 +17,7 @@ var ImageSliderValidation = (function () {
   var realSliderWidth = sliderWidth + r * 2*dpr
   var tipMsg = '向右拖动滑块填充拼图'
   var sliderOffsetY = 19
-  var isMobile = 'ontouchstart' in document.documentElement
+  
 
   //移除节点
   function removeElement (el) {
@@ -110,10 +111,11 @@ var ImageSliderValidation = (function () {
 
 
 
-  function createHandleBox (sliderButtonWidth, onPositionChange, onConfirm, onMouseDown) {
+  function createHandleBox (width, sliderButtonWidth, onPositionChange, onConfirm, onMouseDown) {
     var oHandle = document.createElement('div')
     oHandle.className = 'isv_handler_box'
     oHandle.innerHTML = '<span></span><b>'+ tipMsg +'</b><i></i>';
+    oHandle.style.width = width + 'px'
     var downX = 0, currentX = 0;
     var oSpan, oI, oB;
     setTimeout(function () {
@@ -216,6 +218,7 @@ var ImageSliderValidation = (function () {
     oCanvasWrapper.className = 'isv-canvas'
     oCanvasWrapper.style.width = cssWidth + 'px'
     oCanvasWrapper.style.height = cssHeight + 'px'
+    
     oPaddingBox.className = 'image-slider-validation loading'
     oPaddingBox.onclick = prevent
     var timer02, timer01, backgroundCanvas, sliderCanvas, backgroundCtx, sliderCtx;
@@ -253,6 +256,7 @@ var ImageSliderValidation = (function () {
 
     function checkFail (needNewImage) {
       needNewImage=needNewImage===true
+      
       oPaddingBox.classList.add('fail')
       iHandle.setError()
       timer02 = setTimeout(function () {
@@ -261,7 +265,9 @@ var ImageSliderValidation = (function () {
       }, 1000)
     }
 
-    var iHandle = createHandleBox(sliderButtonWidth, function (toX) {
+
+  
+    var iHandle = createHandleBox(cssWidth, sliderButtonWidth, function (toX) {
       sliderCanvas.style.left = toX + 'px'
     }, function (stopX) {
       
