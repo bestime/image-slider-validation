@@ -59,6 +59,11 @@
   right: 0;
   bottom: 0;
 }
+
+img.isv-back, img.isv-slider {
+  height:100%;
+}
+
 .isv-loading {
   position:absolute;
   left: 0;
